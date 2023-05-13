@@ -16,12 +16,12 @@ def load_data_from_api(*args, **kwargs):
     Template for loading data from API
     """
     KEY = get_secret_value('alphaVantageKey')
-    print(KEY)jjjjj
     url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=KEY'
     response = requests.get(url)
+    response.raise_for_status()
     data = response.json()
     print(data)
-    return 
+    return pd.DataFrame(data)
 
 
 @test
