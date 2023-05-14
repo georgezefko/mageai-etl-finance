@@ -1,4 +1,5 @@
 import io
+from unittest.mock import patch
 
 import pandas as pd
 import requests
@@ -32,8 +33,8 @@ def load_data_from_api(*args, **kwargs):
         "high",
         "low",
         "close",
-        "volume",
         "adjusted close",
+        "volume",
         "dividend amount",
         "split coefficient",
     ]
@@ -45,8 +46,8 @@ def load_data_from_api(*args, **kwargs):
             "high": "float",
             "low": "float",
             "close": "float",
-            "volume": "int",
             "adjusted close": "float",
+            "volume": "int",
             "dividend amount": "float",
             "split coefficient": "float",
         }
@@ -55,8 +56,33 @@ def load_data_from_api(*args, **kwargs):
     # Adding metadata to the DataFrame
     for key, value in data["Meta Data"].items():
         df[key] = value
+
     # return df information
-    df.info()
+    df = df[
+        [
+            "2. Symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "adjusted close",
+            "volume",
+            "dividend amount",
+            "split coefficient",
+            "3. Last Refreshed",
+            "5. Time Zone",
+        ]
+    ]
+
+    df.rename(
+        columns={
+            "2. Symbol": "Symbol",
+            "3. Last Refreshed": "LastRefreshed",
+            "5. Time Zone": "Timezone",
+        },
+        inplace=True,
+    )
+
     return df
 
 
@@ -64,3 +90,41 @@ def load_data_from_api(*args, **kwargs):
 def test_output(output, *args) -> None:
     assert output is not None, "The output is undefined"
     assert isinstance(output, pd.DataFrame)
+    assert len(output.columns) == 11
+
+
+@test
+@patch("requests.get")
+def test_load_data_api(output, mock_requests, **kwargs):
+    # Mock a successful API response
+    mock_response = {
+        "Meta Data": {
+            "1. Information": "Daily Time Series with Splits and Dividend Events",
+            "2. Symbol": "IBM",
+            "3. Last Refreshed": "2023-05-12",
+            "4. Output Size": "Compact",
+            "5. Time Zone": "US/Eastern",
+        },
+        "Time Series (Daily)": {
+            "2023-05-12": {
+                "1. open": "121.41",
+                "2. high": "122.86",
+                "3. low": "121.11",
+                "4. close": "122.84",
+                "5. adjusted close": "122.84",
+                "6. volume": "4564825",
+                "7. dividend amount": "0.0000",
+                "8. split coefficient": "1.0",
+            }
+        },
+    }
+
+    mock_requests.return_value.json.return_value = mock_response
+
+    # Call the function and check the result
+    result = load_data_from_api(**kwargs)
+    assert isinstance(result, pd.DataFrame)
+    assert result.iloc[0]["Symbol"] == "IBM"
+    assert result.iloc[0]["Timezone"] == "US/Eastern"
+    assert result.iloc[0]["open"] == 121.41
+    assert result.iloc[0]["close"] == 122.84
