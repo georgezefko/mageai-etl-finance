@@ -73,7 +73,7 @@ def load_data_from_api(*args, **kwargs):
             "5. Time Zone",
         ]
     ]
-    # df = df.reset_index()
+
     df.rename(
         columns={
             "2. Symbol": "Symbol",
