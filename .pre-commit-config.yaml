@@ -1,48 +1,72 @@
----
-minimum_pre_commit_version: 2.16.0
-exclude: >
-  (?x)^(
-      .+/.venv/.+|.+/dist/.+|.+/.autovenv|.+/docs/|.github|stocks_crypto/mage_data/
-  )$
-fail_fast: true
-default_language_version:
-  python: python3
-default_stages:
-  - prepare-commit-msg
-  - commit
+# ---
+# minimum_pre_commit_version: 2.16.0
+# exclude: >
+#   (?x)^(
+#       .+/.venv/.+|.+/dist/.+|.+/.autovenv|.+/docs/|.github|stocks_crypto/mage_data/
+#   )$
+# fail_fast: true
+# default_language_version:
+#   python: python3
+# default_stages:
+#   - prepare-commit-msg
+#   - commit
 
+# repos:
+#   # Python: Black formatter
+#   - repo: https://github.com/psf/black
+#     rev: 23.3.0
+#     hooks:
+#       - id: black
+#         args: [--safe, --quiet, --config=./pyproject.toml]
+#         files: \.pyi?$
+#         exclude: .github/|.vscode/|stocks_crypto/mage_data/
+#         # override until resolved: https://github.com/psf/black/issues/402
+#         types: []
+
+#   - repo: https://github.com/PyCQA/autoflake
+#     rev: v2.0.2
+#     hooks:
+#       - id: autoflake
+#         exclude: stocks_crypto/mage_data/
+#         args:
+#           - --in-place
+#           - --remove-all-unused-imports
+#           - --expand-star-imports
+#           - --remove-duplicate-keys
+#           - --remove-unused-variables
+
+#   # Flake8
+#   - repo: https://github.com/pycqa/flake8
+#     rev: 6.0.0
+#     hooks:
+#       - id: flake8
+#         args: ["--config=.flake8", "stocks_crypto/"]
+#         # exclude: *fixtures
+#         exclude: scala|doc/|tests/|stocks_crypto/mage_data/
+#         additional_dependencies:
+#           # Finding likely bugs and design problems in your program.
+#           - flake8-bugbear
+
+
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
 repos:
-  # Python: Black formatter
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
     hooks:
-      - id: black
-        args: [--safe, --quiet, --config=./pyproject.toml]
-        files: \.pyi?$
-        exclude: .github/|.vscode/|stocks_crypto/mage_data/
-        # override until resolved: https://github.com/psf/black/issues/402
-        types: []
+    -   id: check-yaml
+        args: [--allow-multiple-documents]
+    -   id: check-added-large-files
+    -   id: debug-statements
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
 
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.2
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v2.7.1
     hooks:
-      - id: autoflake
-        exclude: stocks_crypto/mage_data/
-        args:
-          - --in-place
-          - --remove-all-unused-imports
-          - --expand-star-imports
-          - --remove-duplicate-keys
-          - --remove-unused-variables
+    -   id: reorder-python-imports
 
-  # Flake8
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+-   repo: https://github.com/ambv/black
+    rev: 22.3.0
     hooks:
-      - id: flake8
-        args: ["--config=.flake8", "stocks_crypto/"]
-        # exclude: *fixtures
-        exclude: scala|doc/|tests/|stocks_crypto/mage_data/
-        additional_dependencies:
-          # Finding likely bugs and design problems in your program.
-          - flake8-bugbear
+    - id: black
