@@ -1,0 +1,14 @@
+name: mage_finace
+dependencies:
+  - python=3.8.13
+  - pytest=7.1.1
+  - pytest-mock=3.7.0
+  - sqlalchemy=1.4.32
+  - black=22.3.0
+  - pip=22.1.2
+  - pip:
+      - pre_commit==2.18.1
+      - -r pip_requirements_common.txt
+channels:
+  - defaults
+  - conda-forge
