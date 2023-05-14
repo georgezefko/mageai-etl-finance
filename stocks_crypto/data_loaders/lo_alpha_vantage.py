@@ -32,8 +32,8 @@ def load_data_from_api(*args, **kwargs):
         "high",
         "low",
         "close",
-        "volume",
         "adjusted close",
+        "volume",
         "dividend amount",
         "split coefficient",
     ]
@@ -45,8 +45,8 @@ def load_data_from_api(*args, **kwargs):
             "high": "float",
             "low": "float",
             "close": "float",
-            "volume": "int",
             "adjusted close": "float",
+            "volume": "int",
             "dividend amount": "float",
             "split coefficient": "float",
         }
@@ -55,8 +55,33 @@ def load_data_from_api(*args, **kwargs):
     # Adding metadata to the DataFrame
     for key, value in data["Meta Data"].items():
         df[key] = value
+
     # return df information
-    df.info()
+    df = df[
+        [
+            "2. Symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "adjusted close",
+            "volume",
+            "dividend amount",
+            "split coefficient",
+            "3. Last Refreshed",
+            "5. Time Zone",
+        ]
+    ]
+    # df = df.reset_index()
+    df.rename(
+        columns={
+            "2. Symbol": "Symbol",
+            "3. Last Refreshed": "LastRefreshed",
+            "5. Time Zone": "Timezone",
+        },
+        inplace=True,
+    )
+
     return df
 
 
@@ -64,3 +89,4 @@ def load_data_from_api(*args, **kwargs):
 def test_output(output, *args) -> None:
     assert output is not None, "The output is undefined"
     assert isinstance(output, pd.DataFrame)
+    assert len(output.columns) == 11
