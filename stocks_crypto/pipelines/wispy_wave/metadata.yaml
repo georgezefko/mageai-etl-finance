@@ -3,16 +3,46 @@ blocks:
   color: null
   configuration:
     file_path: null
-  downstream_blocks: []
+  downstream_blocks:
+  - dailyadjustedtransform
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: lo_alpha_vantage
-  status: updated
+  status: executed
   type: data_loader
   upstream_blocks: []
   uuid: lo_alpha_vantage
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - quiet_wave
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: DailyAdjustedTransform
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - lo_alpha_vantage
+  uuid: dailyadjustedtransform
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: quiet wave
+  status: executed
+  type: data_exporter
+  upstream_blocks:
+  - dailyadjustedtransform
+  uuid: quiet_wave
 callbacks: []
 data_integration: null
 description: null
@@ -20,6 +50,6 @@ executor_count: 1
 extensions: {}
 name: wispy wave
 type: python
-updated_at: '2023-05-14 11:16:28'
+updated_at: '2023-05-14 22:11:34'
 uuid: wispy_wave
 widgets: []

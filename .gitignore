@@ -12,5 +12,7 @@ mage-ai.db
 mage_data/
 secrets/
 
-#venv
-magefinance/
+#duckdb
+*.duckdb
+*.wal
+finance
