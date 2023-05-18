@@ -1,1 +1,3 @@
 duckdb==0.7.1
+sqlalchemy
+kafka-python
