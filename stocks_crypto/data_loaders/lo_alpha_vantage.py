@@ -1,7 +1,5 @@
 import io
-from unittest.mock import patch
 
-import pandas as pd
 import requests
 
 if "data_loader" not in globals():
@@ -9,6 +7,18 @@ if "data_loader" not in globals():
 if "test" not in globals():
     from mage_ai.data_preparation.decorators import test
 from mage_ai.data_preparation.shared.secrets import get_secret_value
+from unittest.mock import patch, MagicMock
+
+
+from kafka import KafkaProducer
+import json
+
+
+def delivery_report(err, msg):
+    if err is not None:
+        print("Message delivery failed: {}".format(err))
+    else:
+        print("Message delivered to {} [{}]".format(msg.topic(), msg.partition()))
 
 
 @data_loader
@@ -16,88 +26,51 @@ def load_data_from_api(*args, **kwargs):
     """
     Template for loading data from API
     """
+    #
+    p = KafkaProducer(
+        value_serializer=lambda msg: json.dumps(msg).encode(
+            "utf-8"
+        ),  # we serialize our data to json for efficent transfer
+        bootstrap_servers=["kafka:9092"],
+    )
+    stocks = ["IBM", "AAPL", "AMZN", "IVV"]
     KEY = get_secret_value("alphaVantageKey")
-    url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=IBM&outputsize=full&apikey=KEY"
-    response = requests.get(url)
-    response.raise_for_status()
-    data = response.json()
-    # Convert the time series data to a DataFrame
-    df = pd.DataFrame(data["Time Series (Daily)"]).T
+    for i in stocks:
+        print(i)
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={i}&outputsize=full&apikey={KEY}"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        p.send(TOPIC_NAME="daily_adjusted", value=json.dumps(data))
+        # p.produce('daily_adjusted', json.dumps(data), callback=delivery_report)
 
-    # Convert index to datetime
-    df.index = pd.to_datetime(df.index)
-
-    # Rename columns for clarity
-    df.columns = [
-        "open",
-        "high",
-        "low",
-        "close",
-        "adjusted close",
-        "volume",
-        "dividend amount",
-        "split coefficient",
-    ]
-
-    # Convert the data type of each column to float or integer as appropriate
-    df = df.astype(
-        {
-            "open": "float",
-            "high": "float",
-            "low": "float",
-            "close": "float",
-            "adjusted close": "float",
-            "volume": "int",
-            "dividend amount": "float",
-            "split coefficient": "float",
-        }
-    )
-
-    # Adding metadata to the DataFrame
-    for key, value in data["Meta Data"].items():
-        df[key] = value
-
-    # return df information
-    df = df[
-        [
-            "2. Symbol",
-            "open",
-            "high",
-            "low",
-            "close",
-            "adjusted close",
-            "volume",
-            "dividend amount",
-            "split coefficient",
-            "3. Last Refreshed",
-            "5. Time Zone",
-        ]
-    ]
-
-    df.rename(
-        columns={
-            "2. Symbol": "Symbol",
-            "3. Last Refreshed": "LastRefreshed",
-            "5. Time Zone": "Timezone",
-        },
-        inplace=True,
-    )
-
-    return df
+    p.flush()
 
 
-@test
-def test_output(output, *args) -> None:
-    assert output is not None, "The output is undefined"
-    assert isinstance(output, pd.DataFrame)
-    assert len(output.columns) == 11
+# @data_loader
+# def load_data_from_api(*args, **kwargs):
+#    """
+#    Template for loading data from API
+#    """
+#    dfs = []
+#    stocks = ['IBM', 'AAPL', 'AMZN', 'IVV']
+#    KEY = get_secret_value("alphaVantageKey")
+#    for i in stocks:
+#        print(i)
+#        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=i&outputsize=full&apikey=KEY'
+#        response = requests.get(url)
+#        response.raise_for_status()
+#        data = response.json()
+#        dfs.append(data)
+
+#    return dfs
 
 
 @test
 @patch("requests.get")
-def test_load_data_api(output, mock_requests, **kwargs):
+def test_load_data_api(mock_requests, *args, **kwargs):
     # Mock a successful API response
-    mock_response = {
+    mock_responses = {
         "Meta Data": {
             "1. Information": "Daily Time Series with Splits and Dividend Events",
             "2. Symbol": "IBM",
@@ -118,13 +91,18 @@ def test_load_data_api(output, mock_requests, **kwargs):
             }
         },
     }
+    # for stock in ['IBM', 'AAPL', 'AMZN', 'IVV']
 
-    mock_requests.return_value.json.return_value = mock_response
+    print(mock_requests)
 
+    mock_requests[0].return_value.json.return_value = mock_responses
     # Call the function and check the result
-    result = load_data_from_api(**kwargs)
-    assert isinstance(result, pd.DataFrame)
-    assert result.iloc[0]["Symbol"] == "IBM"
-    assert result.iloc[0]["Timezone"] == "US/Eastern"
-    assert result.iloc[0]["open"] == 121.41
-    assert result.iloc[0]["close"] == 122.84
+    # result = load_data_from_api(**kwargs)
+
+    # Since load_data_from_api returns a list, we check if result is a list
+    # assert isinstance(result, list)
+
+    # Check if all the expected stocks are in the result
+    expected_stocks = ["IBM", "AAPL", "AMZN", "IVV"]
+    for stock in expected_stocks:
+        assert any(data["Meta Data"]["2. Symbol"] == stock for data in result)

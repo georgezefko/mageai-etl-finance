@@ -8,7 +8,7 @@ dependencies:
   - pip=22.1.2
   - pip:
       - pre_commit==2.18.1
-      - -r pip_requirements_common.txt
+      - -r stocks_crypto/requirements.txt
 channels:
   - defaults
   - conda-forge
