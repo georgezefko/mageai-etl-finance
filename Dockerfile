@@ -1,6 +1,6 @@
 FROM mageai/mageai:latest
 
-ARG PROJECT_NAME= stocks_crypto
+ARG PROJECT_NAME = stocks_crypto
 ARG MAGE_CODE_PATH=/home/src
 ARG USER_CODE_PATH=${MAGE_CODE_PATH}/${PROJECT_NAME}
 

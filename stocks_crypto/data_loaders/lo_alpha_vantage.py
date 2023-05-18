@@ -31,7 +31,7 @@ def load_data_from_api(*args, **kwargs):
         value_serializer=lambda msg: json.dumps(msg).encode(
             "utf-8"
         ),  # we serialize our data to json for efficent transfer
-        bootstrap_servers=["kafka:9093"],
+        bootstrap_servers=["kafka:9092"],
     )
     stocks = ["IBM", "AAPL", "AMZN", "IVV"]
     KEY = get_secret_value("alphaVantageKey")
