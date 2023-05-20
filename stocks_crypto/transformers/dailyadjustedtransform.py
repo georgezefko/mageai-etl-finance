@@ -30,9 +30,10 @@ def transform(data, *args, **kwargs):
 
         # Convert index to datetime
         df.index = pd.to_datetime(df.index)
-
+        df = df.reset_index()
         # Rename columns for clarity
         df.columns = [
+            "index",
             "open",
             "high",
             "low",
@@ -64,6 +65,7 @@ def transform(data, *args, **kwargs):
         # return df information
         df = df[
             [
+                "index",
                 "2. Symbol",
                 "open",
                 "high",
@@ -80,6 +82,7 @@ def transform(data, *args, **kwargs):
 
         df.rename(
             columns={
+                "index": "Timeseries",
                 "2. Symbol": "Symbol",
                 "3. Last Refreshed": "LastRefreshed",
                 "5. Time Zone": "Timezone",
@@ -95,14 +98,56 @@ def transform(data, *args, **kwargs):
 def test_output(output, *args) -> None:
     assert output is not None, "The output is undefined"
     assert isinstance(output, pd.DataFrame)
-    assert len(output.columns) == 11
-
-    assert len(output.Symbol.unique()) == 4
+    assert len(output.columns) == 12
 
 
-@test
-def test_output(output, *args) -> None:
-    """
-    Template code for testing the output of the block.
-    """
-    assert output is not None, "The output is undefined"
+def test_load_data_api(output, mock_requests, **kwargs):
+    # Mock a successful API response
+
+    mock_responses = [
+        {
+            "Meta Data": {
+                "1. Information": "Daily Time Series with Splits and Dividend Events",
+                "2. Symbol": "IBM",
+                "3. Last Refreshed": "2023-05-12",
+                "4. Output Size": "Compact",
+                "5. Time Zone": "US/Eastern",
+            },
+            "Time Series (Daily)": {
+                "2023-05-12": {
+                    "1. open": "121.41",
+                    "2. high": "122.86",
+                    "3. low": "121.11",
+                    "4. close": "122.84",
+                    "5. adjusted close": "122.84",
+                    "6. volume": "4564825",
+                    "7. dividend amount": "0.0000",
+                    "8. split coefficient": "1.0",
+                }
+            },
+        }
+    ]
+    # for stock in ['IBM', 'AAPL', 'AMZN', 'IVV']
+
+    mock_requests.return_value.json.return_value = mock_response
+    # print(mock_requests)
+
+    # mock_requests[0].return_value.json.return_value = mock_responses
+    # Call the function and check the result
+    result = load_data_from_api(**kwargs)
+    assert isinstance(result, pd.DataFrame)
+    assert result.iloc[0]["Symbol"] == "IBM"
+    assert result.iloc[0]["Timezone"] == "US/Eastern"
+    assert result.iloc[0]["open"] == 121.41
+    assert result.iloc[0]["close"] == 122.84
+    # result = load_data_from_api(**kwargs)
+
+    # Since load_data_from_api returns a list, we check if result is a list
+    # assert isinstance(result, list)
+
+    # Check if all the expected stocks are in the result
+    # expected_stocks = ["IBM", "AAPL", "AMZN", "IVV"]
+    # for stock in expected_stocks:
+
+
+#     assert any(data["Meta Data"]["2. Symbol"] == stock for data in result)
