@@ -1,3 +1,4 @@
-duckdb==0.7.1
+duckdb==0.8.0
 sqlalchemy
 kafka-python
+duckdb_engine
