@@ -91,6 +91,7 @@ def transform(data, *args, **kwargs):
         )
         dfs.append(df)
     transformed = pd.concat(dfs)
+    print(transformed.head())
     return transformed
 
 
@@ -127,12 +128,9 @@ def test_load_data_api(output, mock_requests, **kwargs):
             },
         }
     ]
-    # for stock in ['IBM', 'AAPL', 'AMZN', 'IVV']
 
     mock_requests.return_value.json.return_value = mock_response
-    # print(mock_requests)
 
-    # mock_requests[0].return_value.json.return_value = mock_responses
     # Call the function and check the result
     result = load_data_from_api(**kwargs)
     assert isinstance(result, pd.DataFrame)
@@ -140,14 +138,3 @@ def test_load_data_api(output, mock_requests, **kwargs):
     assert result.iloc[0]["Timezone"] == "US/Eastern"
     assert result.iloc[0]["open"] == 121.41
     assert result.iloc[0]["close"] == 122.84
-    # result = load_data_from_api(**kwargs)
-
-    # Since load_data_from_api returns a list, we check if result is a list
-    # assert isinstance(result, list)
-
-    # Check if all the expected stocks are in the result
-    # expected_stocks = ["IBM", "AAPL", "AMZN", "IVV"]
-    # for stock in expected_stocks:
-
-
-#     assert any(data["Meta Data"]["2. Symbol"] == stock for data in result)

@@ -16,3 +16,4 @@ secrets/
 *.duckdb
 *.wal
 finance
+alphage

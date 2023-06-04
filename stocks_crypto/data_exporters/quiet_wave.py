@@ -1,7 +1,10 @@
 if "data_exporter" not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
-import duckdb
-import sqlalchemy
+from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import select, func
+from sqlalchemy import inspect
+import pandas as pd
 
 
 @data_exporter
@@ -17,30 +20,63 @@ def export_data(data, *args, **kwargs):
         Optionally return any object and it'll be logged and
         displayed when inspecting the block run.
     """
-    # Specify your data exporting logic here
-    # print(data.head)
-    # to start an in-memory database
-    # con = duckdb.connect(database="finance")
-    con = duckdb.connect(database="finance.duckdb", read_only=False)
 
-    # create a new table from the contents of a DataFrame
-    con.execute("CREATE TABLE IF NOT EXISTS main.daily_adjusted AS SELECT * FROM data")
+    engine = create_engine(
+        "duckdb:///stockapp.duckdb",
+        connect_args={"read_only": False, "config": {"memory_limit": "1gb"}},
+    )
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    metadata = MetaData()
+
+    inspector = inspect(engine)
+    # If the table doesn't exist, create it
+    if not "daily_adjusted" in inspector.get_table_names():
+        data.to_sql("daily_adjusted", engine)
+
+    # Reflect the table
+    daily_adjusted = Table("daily_adjusted", metadata, autoload_with=engine)
+
+    # Print database URL
+    print(f"Database URL: {engine.url}")
+
+    # Print table names
+    print(f"Table Names: {inspector.get_table_names()}")
+
+    # Print schema of the table 'daily_adjusted'
+    print(f"Schema of 'daily_adjusted': {inspector.get_columns('daily_adjusted')}")
 
     # Load the current data from the table
-    current_data = con.execute("SELECT * FROM main.daily_adjusted").fetch_df()
+    stmt = select([daily_adjusted])
+    current_data = pd.read_sql_query(stmt, con=engine)
 
-    # Assuming 'data' is your new DataFrame
+    # Print first five rows
+    print(f"First five rows: \n{current_data.head()}")
+
     # Filter out rows in data that already exist in current_data
+
     unique_rows = data[
-        ~data.set_index(["Symbol", "TimeSeries"]).index.isin(
-            current_data.set_index(["Symbol", "TimeSeries"]).index
+        ~data.set_index(["Symbol", "Timeseries"]).index.isin(
+            current_data.set_index(["Symbol", "Timeseries"]).index
         )
     ]
 
-    # Insert unique_rows into the table
-    con.register("unique_rows", unique_rows)
-    con.execute("INSERT INTO main.daily_adjusted SELECT * FROM unique_rows")
+    print(f"Unique rows are:{len(unique_rows)}")
+    # Assuming the 'index' column is not necessary, let's drop it
+    current_data = current_data.drop(columns=["index"])
 
-    con.execute("SELECT Symbol,count(*) FROM main.daily_adjusted group by 1")
-    print(con.fetchall())
-    con.close()
+    # Insert unique_rows into the table
+    unique_rows.to_sql("daily_adjusted", con=engine, if_exists="append", index=False)
+
+    # Group by symbol
+    stmt = select([daily_adjusted.c.Symbol, func.count()]).group_by(
+        daily_adjusted.c.Symbol
+    )
+    results = session.execute(stmt).fetchall()
+
+    print(results)
+
+    session.commit()
+    session.close()

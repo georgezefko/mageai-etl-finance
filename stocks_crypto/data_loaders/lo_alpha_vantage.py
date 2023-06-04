@@ -16,7 +16,7 @@ def load_data_from_api(*args, **kwargs):
     Template for loading data from API
     """
     dfs = []
-    stocks = ["IBM", "AAPL", "AMZN", "IVV"]
+    stocks = ["IBM", "AAPL", "AMZN", "IVV", "NVDA", "TSLA"]
     KEY = get_secret_value("alphaVantageKey")
     for i in stocks:
         print(i)
