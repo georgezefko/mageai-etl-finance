@@ -18,18 +18,19 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
+  - mergedata
   - quiet_wave
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: DailyAdjustedTransform
-  status: updated
+  status: executed
   type: transformer
   upstream_blocks:
   - lo_alpha_vantage
   uuid: dailyadjustedtransform
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks: []
@@ -43,6 +44,65 @@ blocks:
   upstream_blocks:
   - dailyadjustedtransform
   uuid: quiet_wave
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - transformstatements
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: Statements
+  status: executed
+  type: data_loader
+  upstream_blocks: []
+  uuid: statements
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - mergedata
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transformStatements
+  status: updated
+  type: transformer
+  upstream_blocks:
+  - statements
+  uuid: transformstatements
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - mergedexportaggr
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergeData
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - transformstatements
+  - dailyadjustedtransform
+  uuid: mergedata
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergedExportAggr
+  status: executed
+  type: data_exporter
+  upstream_blocks:
+  - mergedata
+  uuid: mergedexportaggr
 callbacks: []
 data_integration: null
 description: null
@@ -50,6 +110,6 @@ executor_count: 1
 extensions: {}
 name: wispy wave
 type: python
-updated_at: '2023-06-03 17:06:11'
+updated_at: '2023-06-08 21:59:13'
 uuid: wispy_wave
 widgets: []

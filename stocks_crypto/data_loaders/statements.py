@@ -1,5 +1,6 @@
 import io
 
+import pandas as pd
 import requests
 
 if "data_loader" not in globals():
@@ -16,11 +17,12 @@ def load_data_from_api(*args, **kwargs):
     Template for loading data from API
     """
     dfs = []
-    stocks = ["AAPL", "AMZN", "IVV", "NVDA", "TSLA"]
+    stocks = ["IBM", "AAPL", "AMZN", "NVDA", "TSLA"]
+
     KEY = get_secret_value("alphaVantageKey")
     for i in stocks:
         print(i)
-        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={i}&outputsize=full&apikey={KEY}"
+        url = f"https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol={i}&apikey={KEY}"
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
@@ -42,7 +44,7 @@ def test_symbols(output, *args) -> None:
     Template code for testing the output of the block.
     """
     # List of expected symbols
-    expected_symbols = ["AAPL", "AMZN", "IVV", "NVDA", "TSLA"]
+    expected_symbols = ["IBM", "AAPL", "AMZN", "NVDA", "TSLA"]
 
     # Check for presence and consistency of symbols
     for data in output:
