@@ -32,12 +32,18 @@ def export_data(data, *args, **kwargs):
     metadata = MetaData()
 
     inspector = inspect(engine)
-    # If the table doesn't exist, create it
-    if not "stock_state_aggr" in inspector.get_table_names():
-        data.to_sql("stock_state_aggr", engine)
 
     # Reflect the table
-    stock_state_aggr = Table("stock_state_aggr", metadata, autoload_with=engine)
+    # stock_state_aggr = Table("stock_state_aggr", metadata, autoload_with=engine)
+
+    # Drop the table
+    # stock_state_aggr.drop(engine)
+    # If the table doesn't exist, create it
+    if not "stock_aggr" in inspector.get_table_names():
+        data.to_sql("stock_aggr", engine)
+
+    # Reflect the table
+    stock_aggr = Table("stock_aggr", metadata, autoload_with=engine)
 
     # Print database URL
     print(f"Database URL: {engine.url}")
@@ -46,10 +52,10 @@ def export_data(data, *args, **kwargs):
     print(f"Table Names: {inspector.get_table_names()}")
 
     # Print schema of the table 'daily_adjusted'
-    print(f"Schema of 'stock_state_aggr': {inspector.get_columns('stock_state_aggr')}")
+    print(f"Schema of 'stock_aggr': {inspector.get_columns('stock_aggr')}")
 
     # Load the current data from the table
-    stmt = select([stock_state_aggr])
+    stmt = select([stock_aggr])
     current_data = pd.read_sql_query(stmt, con=engine)
 
     # Print first five rows
@@ -68,12 +74,10 @@ def export_data(data, *args, **kwargs):
     current_data = current_data.drop(columns=["index"])
 
     # Insert unique_rows into the table
-    unique_rows.to_sql("stock_state_aggr", con=engine, if_exists="append", index=False)
+    unique_rows.to_sql("stock_aggr", con=engine, if_exists="append", index=False)
 
     # Group by symbol
-    stmt = select([stock_state_aggr.c.symbol, func.count()]).group_by(
-        stock_state_aggr.c.symbol
-    )
+    stmt = select([stock_aggr.c.symbol, func.count()]).group_by(stock_aggr.c.symbol)
     results = session.execute(stmt).fetchall()
 
     print(results)

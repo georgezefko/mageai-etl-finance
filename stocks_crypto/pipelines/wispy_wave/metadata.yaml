@@ -25,12 +25,12 @@ blocks:
   has_callback: false
   language: python
   name: DailyAdjustedTransform
-  status: executed
+  status: updated
   type: transformer
   upstream_blocks:
   - lo_alpha_vantage
   uuid: dailyadjustedtransform
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration: {}
   downstream_blocks:
@@ -45,7 +45,7 @@ blocks:
   upstream_blocks:
   - dailyadjustedtransform
   uuid: quiet_wave
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration: {}
   downstream_blocks:
@@ -60,7 +60,7 @@ blocks:
   upstream_blocks:
   - quiet_wave
   uuid: statements
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration: {}
   downstream_blocks:
@@ -107,7 +107,7 @@ blocks:
   upstream_blocks:
   - mergedata
   uuid: mergedexportaggr
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration: {}
   downstream_blocks:
@@ -122,7 +122,7 @@ blocks:
   upstream_blocks:
   - transformstatements
   uuid: balancesheet
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration: {}
   downstream_blocks:
@@ -144,6 +144,6 @@ executor_count: 1
 extensions: {}
 name: wispy wave
 type: python
-updated_at: '2023-06-10 10:58:03'
+updated_at: '2023-06-10 11:14:41'
 uuid: wispy_wave
 widgets: []
