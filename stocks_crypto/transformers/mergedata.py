@@ -6,7 +6,7 @@ import pandas as pd
 
 
 @transformer
-def transform(df_state, df_daily, *args, **kwargs):
+def transform(df_state, df_daily, df_balance, *args, **kwargs):
     """
     Template code for a transformer block.
 
@@ -21,14 +21,29 @@ def transform(df_state, df_daily, *args, **kwargs):
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
 
+    df_daily["dividend_yield"] = df_daily["dividend amount"] / df_daily["close"]
     # Set 'Timeseries' as the index
     df_daily.set_index("Timeseries", inplace=True)
 
-    # Resample to annual frequency, taking the last observation in each year
-    df_daily = df_daily.resample("Y").last()
-
-    # Add 'Year' column
     df_daily["Year"] = df_daily.index.year
+    # Resample to annual frequency, taking the last observation in each year
+    df_daily = (
+        df_daily.groupby(["Year", "Symbol"])
+        .agg(
+            {
+                "open": "mean",
+                "high": "mean",
+                "low": "mean",
+                "close": "mean",
+                "adjusted close": "mean",
+                "volume": "sum",  # Usually, we sum volumes over periods rather than average
+                "dividend amount": "sum",  # You might also want to sum dividends
+                "dividend_yield": "sum",
+                "split coefficient": "last",  # You might want to keep the last known split coefficient
+            }
+        )
+        .reset_index()
+    )
 
     # Add 'Year' column
     df_state["Year"] = df_state["fiscalDateEnding"].dt.year
@@ -42,9 +57,26 @@ def transform(df_state, df_daily, *args, **kwargs):
         "operatingIncome",
         "netIncome",
         "researchAndDevelopment",
+        "grossMargin",
+        "operatingMargin",
+        "netProfitMargin",
+        "rdIntensity",
+        "interestCoverageRatio",
     ]
 
-    stock_columns = ["Symbol", "Year", "adjusted close", "volume"]
+    stock_columns = [
+        "Symbol",
+        "Year",
+        "open",
+        "high",
+        "low",
+        "close",
+        "adjusted close",
+        "volume",  # Usually, we sum volumes over periods rather than average
+        "dividend amount",  # You might also want to sum dividends
+        "split coefficient",
+        "dividend_yield",
+    ]
 
     # Filter out the necessary columns
     df_state = df_state[financial_columns]
@@ -59,6 +91,26 @@ def transform(df_state, df_daily, *args, **kwargs):
         how="inner",
     )
 
+    # Add 'Year' column
+    df_balance["Year"] = df_balance["fiscalDateEnding"].dt.year
+
+    balance_columns = [
+        "symbol",
+        "Year",
+        "currentRatio",
+        "quickRatio",
+        "debtEquityRatio",
+        "longTermDebtEquityRatio",
+    ]
+    df_balance = df_balance[balance_columns]
+
+    merged_data = pd.merge(
+        merged_data,
+        df_balance,
+        left_on=["symbol", "Year"],
+        right_on=["symbol", "Year"],
+        how="inner",
+    )
     # Drop redundant 'Symbol' column
     merged_data = merged_data.drop("Symbol", axis=1)
     return merged_data
@@ -70,4 +122,5 @@ def test_output(output, *args) -> None:
     Template code for testing the output of the block.
     """
     assert output is not None, "The output is undefined"
-    assert len(output["symbol"].unique()) == 5
+
+    assert len(output["symbol"].unique()) == 4

@@ -93,9 +93,7 @@ def transform(data, *args, **kwargs):
         )
         dfs.append(df)
     transformed = pd.concat(dfs)
-    transformed["dividend_yield"] = (
-        transformed["dividend amount"] / transformed["close"]
-    )
+
     # print(transformed.head())
     return transformed
 
@@ -104,7 +102,7 @@ def transform(data, *args, **kwargs):
 def test_output(output, *args) -> None:
     assert output is not None, "The output is undefined"
     assert isinstance(output, pd.DataFrame)
-    assert len(output.columns) == 13
+    assert len(output.columns) == 12
 
 
 @test
