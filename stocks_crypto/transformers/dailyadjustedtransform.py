@@ -5,6 +5,8 @@ if "test" not in globals():
 
 
 import pandas as pd
+from unittest.mock import patch
+import requests
 
 
 @transformer
@@ -91,7 +93,8 @@ def transform(data, *args, **kwargs):
         )
         dfs.append(df)
     transformed = pd.concat(dfs)
-    print(transformed.head())
+
+    # print(transformed.head())
     return transformed
 
 
@@ -102,39 +105,41 @@ def test_output(output, *args) -> None:
     assert len(output.columns) == 12
 
 
-def test_load_data_api(output, mock_requests, **kwargs):
+@test
+def test_load_data_api(mock_requests, **kwargs):
     # Mock a successful API response
+    @patch("requests.get")
+    def _test():
+        mock_responses = [
+            {
+                "Meta Data": {
+                    "1. Information": "Daily Time Series with Splits and Dividend Events",
+                    "2. Symbol": "IBM",
+                    "3. Last Refreshed": "2023-05-12",
+                    "4. Output Size": "Compact",
+                    "5. Time Zone": "US/Eastern",
+                },
+                "Time Series (Daily)": {
+                    "2023-05-12": {
+                        "1. open": "121.41",
+                        "2. high": "122.86",
+                        "3. low": "121.11",
+                        "4. close": "122.84",
+                        "5. adjusted close": "122.84",
+                        "6. volume": "4564825",
+                        "7. dividend amount": "0.0000",
+                        "8. split coefficient": "1.0",
+                    }
+                },
+            }
+        ]
 
-    mock_responses = [
-        {
-            "Meta Data": {
-                "1. Information": "Daily Time Series with Splits and Dividend Events",
-                "2. Symbol": "IBM",
-                "3. Last Refreshed": "2023-05-12",
-                "4. Output Size": "Compact",
-                "5. Time Zone": "US/Eastern",
-            },
-            "Time Series (Daily)": {
-                "2023-05-12": {
-                    "1. open": "121.41",
-                    "2. high": "122.86",
-                    "3. low": "121.11",
-                    "4. close": "122.84",
-                    "5. adjusted close": "122.84",
-                    "6. volume": "4564825",
-                    "7. dividend amount": "0.0000",
-                    "8. split coefficient": "1.0",
-                }
-            },
-        }
-    ]
+        mock_requests.return_value.json.return_value = mock_responses
 
-    mock_requests.return_value.json.return_value = mock_response
-
-    # Call the function and check the result
-    result = load_data_from_api(**kwargs)
-    assert isinstance(result, pd.DataFrame)
-    assert result.iloc[0]["Symbol"] == "IBM"
-    assert result.iloc[0]["Timezone"] == "US/Eastern"
-    assert result.iloc[0]["open"] == 121.41
-    assert result.iloc[0]["close"] == 122.84
+        # Call the function and check the result
+        result = load_data_from_api(**kwargs)
+        assert isinstance(result, pd.DataFrame)
+        assert result.iloc[0]["Symbol"] == "IBM"
+        assert result.iloc[0]["Timezone"] == "US/Eastern"
+        assert result.iloc[0]["open"] == 121.41
+        assert result.iloc[0]["close"] == 122.84

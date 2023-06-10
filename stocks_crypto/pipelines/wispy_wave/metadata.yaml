@@ -18,6 +18,7 @@ blocks:
   color: null
   configuration: {}
   downstream_blocks:
+  - mergedata
   - quiet_wave
   executor_config: null
   executor_type: local_python
@@ -32,7 +33,8 @@ blocks:
 - all_upstream_blocks_executed: false
   color: null
   configuration: {}
-  downstream_blocks: []
+  downstream_blocks:
+  - statements
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -43,6 +45,98 @@ blocks:
   upstream_blocks:
   - dailyadjustedtransform
   uuid: quiet_wave
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - transformstatements
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: Statements
+  status: executed
+  type: data_loader
+  upstream_blocks:
+  - quiet_wave
+  uuid: statements
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - mergedata
+  - balancesheet
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transformStatements
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - statements
+  uuid: transformstatements
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - mergedexportaggr
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergeData
+  status: updated
+  type: transformer
+  upstream_blocks:
+  - transformstatements
+  - dailyadjustedtransform
+  - balancesheettransform
+  uuid: mergedata
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergedExportAggr
+  status: executed
+  type: data_exporter
+  upstream_blocks:
+  - mergedata
+  uuid: mergedexportaggr
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - balancesheettransform
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: BalanceSheet
+  status: executed
+  type: data_loader
+  upstream_blocks:
+  - transformstatements
+  uuid: balancesheet
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - mergedata
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: BalanceSheetTransform
+  status: updated
+  type: transformer
+  upstream_blocks:
+  - balancesheet
+  uuid: balancesheettransform
 callbacks: []
 data_integration: null
 description: null
@@ -50,6 +144,6 @@ executor_count: 1
 extensions: {}
 name: wispy wave
 type: python
-updated_at: '2023-06-03 17:06:11'
+updated_at: '2023-06-10 11:14:41'
 uuid: wispy_wave
 widgets: []
