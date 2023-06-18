@@ -5,8 +5,22 @@ if "test" not in globals():
 import pandas as pd
 
 
+def metrics(df):
+
+    df["EPS"] = df["netIncome"] / df["commonStockSharesOutstanding"]
+    df["PE_Ratio"] = df["close"] / df["EPS"]
+
+    df["PB_Ratio"] = df["close"] / (
+        df["totalShareholderEquity"] / df["commonStockSharesOutstanding"]
+    )
+    df["ROE"] = df["netIncome"] / df["totalShareholderEquity"]
+    df["ROA"] = df["netIncome"] / df["totalAssets"]
+
+    return df
+
+
 @transformer
-def transform(df_state, df_daily, df_balance, *args, **kwargs):
+def transform(df_state, df_daily, df_balance, df_cash, *args, **kwargs):
     """
     Template code for a transformer block.
 
@@ -101,6 +115,9 @@ def transform(df_state, df_daily, df_balance, *args, **kwargs):
         "quickRatio",
         "debtEquityRatio",
         "longTermDebtEquityRatio",
+        "totalShareholderEquity",
+        "commonStockSharesOutstanding",
+        "totalAssets",
     ]
     df_balance = df_balance[balance_columns]
 
@@ -111,8 +128,32 @@ def transform(df_state, df_daily, df_balance, *args, **kwargs):
         right_on=["symbol", "Year"],
         how="inner",
     )
+
+    # Add 'Year' column
+    df_cash["Year"] = df_cash["fiscalDateEnding"].dt.year
+
+    cash_columns = [
+        "symbol",
+        "Year",
+        "freeCashFlow",
+        "netCashFlow",
+        "operatingCashflowToNetIncome",
+        "dividendPayoutRatio",
+    ]
+    df_cash = df_cash[cash_columns]
+
+    merged_data = pd.merge(
+        merged_data,
+        df_cash,
+        left_on=["symbol", "Year"],
+        right_on=["symbol", "Year"],
+        how="inner",
+    )
+
+    merged_data = metrics(merged_data)
     # Drop redundant 'Symbol' column
     merged_data = merged_data.drop("Symbol", axis=1)
+
     return merged_data
 
 

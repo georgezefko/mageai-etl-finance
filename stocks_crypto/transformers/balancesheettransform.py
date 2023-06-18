@@ -16,6 +16,7 @@ def metrics(df):
     ) / df["totalCurrentLiabilities"]
     df["debtEquityRatio"] = df["totalLiabilities"] / df["totalShareholderEquity"]
     df["longTermDebtEquityRatio"] = df["longTermDebt"] / df["totalShareholderEquity"]
+
     return df
 
 

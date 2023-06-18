@@ -25,16 +25,15 @@ blocks:
   has_callback: false
   language: python
   name: DailyAdjustedTransform
-  status: updated
+  status: executed
   type: transformer
   upstream_blocks:
   - lo_alpha_vantage
   uuid: dailyadjustedtransform
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
-  downstream_blocks:
-  - statements
+  downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -45,7 +44,7 @@ blocks:
   upstream_blocks:
   - dailyadjustedtransform
   uuid: quiet_wave
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks:
@@ -57,15 +56,13 @@ blocks:
   name: Statements
   status: executed
   type: data_loader
-  upstream_blocks:
-  - quiet_wave
+  upstream_blocks: []
   uuid: statements
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks:
   - mergedata
-  - balancesheet
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -76,7 +73,7 @@ blocks:
   upstream_blocks:
   - statements
   uuid: transformstatements
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks:
@@ -86,14 +83,15 @@ blocks:
   has_callback: false
   language: python
   name: mergeData
-  status: updated
+  status: executed
   type: transformer
   upstream_blocks:
   - transformstatements
   - dailyadjustedtransform
   - balancesheettransform
+  - transformcashflow
   uuid: mergedata
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks: []
@@ -102,12 +100,12 @@ blocks:
   has_callback: false
   language: python
   name: mergedExportAggr
-  status: executed
+  status: updated
   type: data_exporter
   upstream_blocks:
   - mergedata
   uuid: mergedexportaggr
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks:
@@ -119,10 +117,9 @@ blocks:
   name: BalanceSheet
   status: executed
   type: data_loader
-  upstream_blocks:
-  - transformstatements
+  upstream_blocks: []
   uuid: balancesheet
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks:
@@ -132,11 +129,40 @@ blocks:
   has_callback: false
   language: python
   name: BalanceSheetTransform
-  status: updated
+  status: executed
   type: transformer
   upstream_blocks:
   - balancesheet
   uuid: balancesheettransform
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - transformcashflow
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cashFlow
+  status: executed
+  type: data_loader
+  upstream_blocks: []
+  uuid: cashflow
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - mergedata
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: TransformCashFlow
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - cashflow
+  uuid: transformcashflow
 callbacks: []
 data_integration: null
 description: null
@@ -144,6 +170,6 @@ executor_count: 1
 extensions: {}
 name: wispy wave
 type: python
-updated_at: '2023-06-10 11:14:41'
+updated_at: '2023-06-18 07:20:03'
 uuid: wispy_wave
 widgets: []

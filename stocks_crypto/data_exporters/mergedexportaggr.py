@@ -34,12 +34,13 @@ def export_data(data, *args, **kwargs):
     inspector = inspect(engine)
 
     # Reflect the table
-    # stock_state_aggr = Table("stock_state_aggr", metadata, autoload_with=engine)
+    # stock_aggr = Table("stock_aggr", metadata, autoload_with=engine)
 
     # Drop the table
-    # stock_state_aggr.drop(engine)
+    # stock_aggr.drop(engine)
     # If the table doesn't exist, create it
     if not "stock_aggr" in inspector.get_table_names():
+
         data.to_sql("stock_aggr", engine)
 
     # Reflect the table
