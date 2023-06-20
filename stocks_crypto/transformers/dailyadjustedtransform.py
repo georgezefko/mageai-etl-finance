@@ -85,7 +85,7 @@ def transform(data, *args, **kwargs):
         df.rename(
             columns={
                 "index": "Timeseries",
-                "2. Symbol": "Symbol",
+                "2. Symbol": "symbol",
                 "3. Last Refreshed": "LastRefreshed",
                 "5. Time Zone": "Timezone",
             },

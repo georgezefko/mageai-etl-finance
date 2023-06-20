@@ -1,0 +1,60 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks:
+  - transformstatements
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: statements
+  status: executed
+  type: data_loader
+  upstream_blocks: []
+  uuid: statements
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks:
+  - mergedexportaggr
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transformstatements
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - statements
+  uuid: transformstatements
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergedexportaggr
+  status: updated
+  type: data_exporter
+  upstream_blocks:
+  - transformstatements
+  uuid: mergedexportaggr
+callbacks: []
+data_integration: null
+description: null
+executor_count: 1
+extensions: {}
+name: financial state
+type: python
+updated_at: '2023-06-19 20:43:57'
+uuid: financial_state
+variables:
+  date: fiscalDateEnding
+  tableName: financialState
+widgets: []
