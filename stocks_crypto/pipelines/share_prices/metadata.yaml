@@ -1,0 +1,60 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks:
+  - dailyadjustedtransform
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: lo_alpha_vantage
+  status: executed
+  type: data_loader
+  upstream_blocks: []
+  uuid: lo_alpha_vantage
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks:
+  - mergedexportaggr
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: dailyadjustedtransform
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - lo_alpha_vantage
+  uuid: dailyadjustedtransform
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergedexportaggr
+  status: executed
+  type: data_exporter
+  upstream_blocks:
+  - dailyadjustedtransform
+  uuid: mergedexportaggr
+callbacks: []
+data_integration: null
+description: null
+executor_count: 1
+extensions: {}
+name: share prices
+type: python
+updated_at: '2023-06-19 21:00:26'
+uuid: share_prices
+variables:
+  date: Timeseries
+  tableName: sharePrices
+widgets: []

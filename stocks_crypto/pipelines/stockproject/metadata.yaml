@@ -168,8 +168,8 @@ data_integration: null
 description: null
 executor_count: 1
 extensions: {}
-name: wispy wave
+name: stockProject
 type: python
-updated_at: '2023-06-18 07:20:03'
-uuid: wispy_wave
+updated_at: '2023-06-19 21:26:25'
+uuid: stockproject
 widgets: []

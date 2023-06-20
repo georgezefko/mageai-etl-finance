@@ -1,0 +1,60 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks:
+  - transformcashflow
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: cashflow
+  status: executed
+  type: data_loader
+  upstream_blocks: []
+  uuid: cashflow
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks:
+  - mergedexportaggr
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transformcashflow
+  status: executed
+  type: transformer
+  upstream_blocks:
+  - cashflow
+  uuid: transformcashflow
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: null
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mergedexportaggr
+  status: executed
+  type: data_exporter
+  upstream_blocks:
+  - transformcashflow
+  uuid: mergedexportaggr
+callbacks: []
+data_integration: null
+description: null
+executor_count: 1
+extensions: {}
+name: cashflow
+type: python
+updated_at: '2023-06-19 20:38:29'
+uuid: cashflow
+variables:
+  date: fiscalDateEnding
+  tableName: cashflow
+widgets: []
