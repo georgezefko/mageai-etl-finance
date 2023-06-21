@@ -18,9 +18,11 @@ The data pipeline consists of the following steps:
 
 A flowchart of the pipeline is shown below:
 
-![Data Workflow](images/mageFinance.jpg) width=50% height=50%
+![Data Workflow](images/pipeline.png)
 
-This is how it looks in Mage
+This is how it looks in Mage.
+However, to avoid issues with limited calls from API i have break it down in 5 pipelines.
+So, first I save the data in 4 separate tables and then merge them to one big table.
 
 ## Setup
 To set up the project, follow these steps:
@@ -44,6 +46,7 @@ eg. - /{full path}/stockapp.duckdb:/app/stockapp.duckdb
 To run the pipeline, follow these steps:
 
 1.  Access the Mage-AI web interface at http://localhost:6789/
-2.  Click on the "wispy_wave" pipeline
+2.  Click on the "stockProject" pipeline
+- You may want to run the individual ones to avoid errors from API
 3.  Click on "Run pipeline now" and "Run now"
 4.  Enter the trigger and check the pipeline result

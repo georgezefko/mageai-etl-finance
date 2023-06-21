@@ -3,13 +3,14 @@ blocks:
   color: null
   configuration:
     file_path: null
-  downstream_blocks: []
+  downstream_blocks:
+  - mergedata
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: insertbalance
-  status: not_executed
+  status: executed
   type: data_loader
   upstream_blocks: []
   uuid: insertbalance
@@ -17,13 +18,14 @@ blocks:
   color: null
   configuration:
     file_path: null
-  downstream_blocks: []
+  downstream_blocks:
+  - mergedata
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: insertcashflow
-  status: not_executed
+  status: failed
   type: data_loader
   upstream_blocks: []
   uuid: insertcashflow
@@ -31,13 +33,14 @@ blocks:
   color: null
   configuration:
     file_path: null
-  downstream_blocks: []
+  downstream_blocks:
+  - mergedata
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: insertshares
-  status: not_executed
+  status: updated
   type: data_loader
   upstream_blocks: []
   uuid: insertshares
@@ -45,21 +48,23 @@ blocks:
   color: null
   configuration:
     file_path: null
-  downstream_blocks: []
+  downstream_blocks:
+  - mergedata
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: insertstatement
-  status: not_executed
+  status: failed
   type: data_loader
   upstream_blocks: []
   uuid: insertstatement
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration:
     file_path: null
-  downstream_blocks: []
+  downstream_blocks:
+  - mergedexportaggr
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -67,9 +72,13 @@ blocks:
   name: mergedata
   status: not_executed
   type: transformer
-  upstream_blocks: []
+  upstream_blocks:
+  - insertshares
+  - insertcashflow
+  - insertbalance
+  - insertstatement
   uuid: mergedata
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration:
     file_path: null
@@ -81,7 +90,8 @@ blocks:
   name: mergedexportaggr
   status: not_executed
   type: data_exporter
-  upstream_blocks: []
+  upstream_blocks:
+  - mergedata
   uuid: mergedexportaggr
 callbacks: []
 data_integration: null
@@ -90,7 +100,7 @@ executor_count: 1
 extensions: {}
 name: merge stocks
 type: python
-updated_at: null
+updated_at: '2023-06-21 20:01:42'
 uuid: merge_stocks
 variables:
   date: Year
