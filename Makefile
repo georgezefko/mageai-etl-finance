@@ -1,19 +1,21 @@
+CONTAINER_NAME ?= unruffled_wilbur
+IMAGE_TAG ?= mageai/mageai
 mageBuild:
 
-	docker build --build-arg PROJECT_NAME=stocks_crypto -t mageai/mageai .
+	docker build --build-arg PROJECT_NAME=stocks_crypto -t $(IMAGE_TAG) .
 
 mageRun:
 
-	-docker rm -f unruffled_wilbur
-	docker run -d --name unruffled_wilbur mageai/mageai
+	-docker rm -f $(CONTAINER_NAME)
+	docker run -d --name $(CONTAINER_NAME) $(IMAGE_TAG)
 
 mageStart:
 
-	docker start unruffled_wilbur
+	docker start $(CONTAINER_NAME)
 
 mageStop:
 
-	docker stop unruffled_wilbur
+	docker stop $(CONTAINER_NAME)
 
 supersetUp:
 
