@@ -1,12 +1,24 @@
 # Stocks-Crypto ETL|Data Engineering Project
 
-The goal of this project is to perform basic data analytics on a couple of stocks, ETFs and crypto I am currently hold using **docker** for conteinerization, **mage ai** for orchestration and data ingestion, **DuckDB** for storage and **Apache Superset** for visualisation
+The project aims to shows how to build an End-to-End data pipeline (ETL) and perform basic data analytics on a couple of stocks, ETFs and crypto (which I currently hold) while testing out cool technologies like Mage, DuckDB and Apache Superset.
 
 ![Data Workflow](images/mageFinance.jpg)
 
 ## Data Sources
 The Mage-AI Stocks Project uses data from Alpha Vantage. \
 Access keys can be created by following the Alpha Vantage docs: https://www.alphavantage.co
+
+## Data Stack
+
+Mage-ai -> For data pipeline development and orchestration (Get info [here](https://www.mage.ai))
+
+DuckDB -> For data storage (Find more [here](https://duckdb.org))
+
+Visualizations -> Apache Superset (More info [here](https://superset.apache.org))
+
+Contenerization -> Docker
+
+Language -> Python
 
 ## Pipeline
 The data pipeline consists of the following steps:
