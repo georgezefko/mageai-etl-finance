@@ -56,4 +56,4 @@ To run the pipeline, follow these steps:
 
 Work in progress of the dashboard is shown below
 
-![](/Users/georgioszefkilis/mageai-etl-finance/images/ezgif.com-video-to-gif.gif-2)
+![](images/ezgif.com-video-to-gif-2.gif)
