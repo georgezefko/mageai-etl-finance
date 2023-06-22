@@ -34,13 +34,14 @@ To set up the project, follow these steps:
 5.  To mount the duckDB file in Apache Superset navigate to the corresponding repo
 and inside the ***docker-compose-non-dev.yml*** under ***x-superset-volumes: &superset-volumes*** copy the duckDB path in the **app** container
 eg. - /{full path}/stockapp.duckdb:/app/stockapp.duckdb
-6.  In Make file change the path of the Apache Superset ***docker-compose-non-dev.yml*** is located
+6.  In Make file change the path of the Apache Superset where ***docker-compose-non-dev.yml*** is located (in your local superset repo)
 7.  Fire up Apache superset by using Make supersetUP
 8.  To succesfully run duckDB in Apache Superset do the following:
 - Get the **super_app** container ID (you can docker ps to see the running containers)
 - Then run docker exec -it **dockerId** sh -c "pip install duckdb_engine"
 
 **!NOTE** probably I could have simplified the steps above by adding everything in docker-compose file :)
+Also the Apache superset configuration to be able to run DuckDB was the most challenging part
 
 ## Running the Pipeline
 To run the pipeline, follow these steps:
@@ -50,3 +51,9 @@ To run the pipeline, follow these steps:
 - You may want to run the individual ones to avoid errors from API
 3.  Click on "Run pipeline now" and "Run now"
 4.  Enter the trigger and check the pipeline result
+
+## Dashboard Apache Superset
+
+Work in progress of the dashboard is shown below
+
+![](/Users/georgioszefkilis/mageai-etl-finance/images/ezgif.com-video-to-gif.gif-2)

@@ -10,6 +10,7 @@ blocks:
   has_callback: false
   language: python
   name: cashflow
+  retry_config: null
   status: executed
   type: data_loader
   upstream_blocks: []
@@ -25,6 +26,7 @@ blocks:
   has_callback: false
   language: python
   name: transformcashflow
+  retry_config: null
   status: executed
   type: transformer
   upstream_blocks:
@@ -40,17 +42,22 @@ blocks:
   has_callback: false
   language: python
   name: mergedexportaggr
-  status: executed
+  retry_config: null
+  status: failed
   type: data_exporter
   upstream_blocks:
   - transformcashflow
   uuid: mergedexportaggr
 callbacks: []
+conditionals: []
 data_integration: null
 description: null
+executor_config: {}
 executor_count: 1
+executor_type: null
 extensions: {}
 name: cashflow
+spark_config: {}
 type: python
 updated_at: '2023-06-19 20:38:29'
 uuid: cashflow
