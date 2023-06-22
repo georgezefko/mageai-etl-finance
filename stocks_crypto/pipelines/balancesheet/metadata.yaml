@@ -27,7 +27,7 @@ blocks:
   language: python
   name: balancesheettransform
   retry_config: null
-  status: executed
+  status: failed
   type: transformer
   upstream_blocks:
   - balancesheet
