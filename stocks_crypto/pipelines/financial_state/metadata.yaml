@@ -40,7 +40,7 @@ blocks:
   has_callback: false
   language: python
   name: mergedexportaggr
-  status: updated
+  status: executed
   type: data_exporter
   upstream_blocks:
   - transformstatements
@@ -52,7 +52,7 @@ executor_count: 1
 extensions: {}
 name: financial state
 type: python
-updated_at: '2023-06-19 20:43:57'
+updated_at: '2023-06-24 10:38:11'
 uuid: financial_state
 variables:
   date: fiscalDateEnding

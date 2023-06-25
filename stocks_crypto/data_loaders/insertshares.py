@@ -37,7 +37,7 @@ def load_data(*args, **kwargs):
     # Print table names
     print(f"Table Names: {inspector.get_table_names()}")
     # Select all data from the table
-    query = f"SELECT * FROM adjustD"
+    query = f"SELECT * FROM daily_adjusted"
     data = pd.read_sql_query(query, con=engine)
 
     return data
