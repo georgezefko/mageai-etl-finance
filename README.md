@@ -41,6 +41,8 @@ To set up the project, follow these steps:
 
 1.  Clone the repository and navigate to the project directory
 2.  Build/Start the Docker container using Make mageBuild -> Make mageStart
+-   For local development create conda environment
+-   activate conda environment by calling *conda activate mage_finace*
 3.  Run the pipeline -> This will save the results in duckDB
 4.  Clone the Apache Superset repository
 5.  To mount the duckDB file in Apache Superset navigate to the corresponding repo
@@ -69,3 +71,9 @@ To run the pipeline, follow these steps:
 Work in progress of the dashboard is shown below
 
 ![](images/ezgif.com-video-to-gif-2.gif)
+
+## Improvements
+
+- Add more tests
+- Add more data quality checks
+- Implement CI/CD with Github Actions
